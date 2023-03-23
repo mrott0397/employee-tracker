@@ -45,10 +45,10 @@ function init() {
 
 // view departments
 function viewDepartments() {
-    db.query('SELECT * FROM departments', (err, data) => {
+    db.query('SELECT * FROM department', (err, data) => {
         if (err) throw err
         console.table (data)
-        return init()
+        init()
     })
 }
 
@@ -56,7 +56,7 @@ function viewRoles() {
     db.query('SELECT * FROM roles', (err, data) => {
         if (err) throw err
         console.table (data)
-        return init()
+        init()
     })
 }
 
@@ -64,7 +64,7 @@ function viewEmployees() {
     db.query('SELECT * FROM employee', (err, data) => {
         if (err) throw err
         console.table (data)
-        return init()
+        init()
     })
 }
 
@@ -77,7 +77,7 @@ function addDepartment() {
         }
     ])
     .then (response => {
-        db.query(`insert into department (department_name) VALUES ('${response.name}')`, (err, res) => {
+        db.query(`insert into department (department_name) ('${response.name}')`, (err, res) => {
             if (err) throw err
             console.table (res)
             viewDepartments()
