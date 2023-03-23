@@ -1,10 +1,14 @@
 const inquirer = require('inquirer');
 const db = require('./config/connection');
-require('console.table');
+const cTable = require('console.table');
+
+db.connect(() => {
+    init() 
+});
 
 
-mainMenu()
-function mainMenu () {
+
+function init() {
     inquirer.prompt ([
         {
             type: 'list',
@@ -39,27 +43,28 @@ function mainMenu () {
     });
 }
 
+// view departments
 function viewDepartments() {
-    db.query('SELECT * FROM department', (err, res) => {
+    db.query('SELECT * FROM departments', (err, data) => {
         if (err) throw err
-        console.table (res)
-        return mainMenu()
+        console.table (data)
+        return init()
     })
 }
 
 function viewRoles() {
-    db.query('SELECT * FROM roles', (err, res) => {
+    db.query('SELECT * FROM roles', (err, data) => {
         if (err) throw err
-        console.table (res)
-        return mainMenu()
+        console.table (data)
+        return init()
     })
 }
 
 function viewEmployees() {
-    db.query('SELECT * FROM employee', (err, res) => {
+    db.query('SELECT * FROM employee', (err, data) => {
         if (err) throw err
-        console.table (res)
-        return mainMenu()
+        console.table (data)
+        return init()
     })
 }
 
@@ -75,7 +80,7 @@ function addDepartment() {
         db.query(`insert into department (department_name) VALUES ('${response.name}')`, (err, res) => {
             if (err) throw err
             console.table (res)
-            return mainMenu()
+            viewDepartments()
         })
 
     })
@@ -104,7 +109,7 @@ function addRole() {
         db.query(`insert into roles (title, salary, department_id) VALUES ('${response.title}', ${response.salary}, ${response.department_id})`, (err, res) => {
             if (err) throw err
             console.table (res)
-            return mainMenu()
+            return viewRoles()
         })
 
     })
@@ -113,26 +118,55 @@ function addEmployee() {
     inquirer.prompt ([
         {
             type: 'input',
-            message: 'Enter role title',
-            name: 'title'
+            message: 'Enter employees first name',
+            name: 'firstName'
         },
         {
             type: 'input',
-            message: 'Enter salary',
-            name: 'salary'
+            message: 'Enter employees last name',
+            name: 'lastName'
+        },
+        
+        {
+            type: 'input',
+            message: 'Enter their role',
+            name: 'role'
         },
         {
             type: 'input',
-            message: 'Enter department id',
-            name: 'department_id'
+            message: 'Enter their manager',
+            name: 'manager'
+        },
+    ])
+    .then (response => {
+        db.query(`insert into employees (firstName, lastName, role, manager) VALUES ['${response.firstName}', ${response.lastName}, ${response.role}, ${response.manager}]`, (err, data) => {
+            if (err) throw err
+            console.table (data)
+            return viewEmployees()
+        })
+
+    })
+}
+
+function updateEmployeeRole() {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            message: 'Which employee`s role would you like to update? (choose and employee by ID)',
+            name: 'employeeRole'
+        },
+        {
+            type: 'input',
+            message:'Which role would you like to assign to this employee?',
+            name: 'newRole'
         },
 
     ])
     .then (response => {
-        db.query(`insert into roles (title, salary, department_id) VALUES ('${response.title}', ${response.salary}, ${response.department_id})`, (err, res) => {
+        db.query(`UPDATE employee SET role_id = ? WHERE employee.id = ?, ('${response.newRole}', ${response.employeeRole})`, (err, data) => {
             if (err) throw err
-            console.table (res)
-            return mainMenu()
+            console.table (data)
+            return viewEmployees()
         })
 
     })
