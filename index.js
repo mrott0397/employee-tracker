@@ -52,6 +52,7 @@ function viewDepartments() {
     })
 }
 
+// view roles
 function viewRoles() {
     db.query('SELECT * FROM roles', (err, data) => {
         if (err) throw err
@@ -60,6 +61,7 @@ function viewRoles() {
     })
 }
 
+// view employees
 function viewEmployees() {
     db.query('SELECT * FROM employee', (err, data) => {
         if (err) throw err
@@ -68,6 +70,7 @@ function viewEmployees() {
     })
 }
 
+// add a department
 function addDepartment() {
     inquirer.prompt ([
         {
@@ -86,6 +89,7 @@ function addDepartment() {
     })
 }
 
+// add a role
 function addRole() {
     inquirer.prompt ([
         {
@@ -114,6 +118,7 @@ function addRole() {
 
     })
 }
+// add an employee
 function addEmployee() {
     inquirer.prompt ([
         {
@@ -139,7 +144,7 @@ function addEmployee() {
         },
     ])
     .then (response => {
-        db.query(`insert into employee (first_name, last_name, role_id, manager_id) VALUES ('${response.first_name}', ${response.last_name}, ${response.role_id}, ${response.manager_id})`, (err, data) => {
+        db.query(`insert into employee (first_name, last_name, role_id, manager_id) VALUES ('${response.first_name}', '${response.last_name}', ${response.role_id}, ${response.manager_id})`, (err, data) => {
             if (err) throw err
             console.table (data)
             return viewEmployees()
@@ -148,6 +153,7 @@ function addEmployee() {
     })
 }
 
+// update an employee
 function updateEmployeeRole() {
     inquirer.prompt ([
         {
@@ -157,13 +163,13 @@ function updateEmployeeRole() {
         },
         {
             type: 'input',
-            message:'Which role would you like to assign to this employee?',
+            message:'Which role would you like to assign to this employee? (use role ID)',
             name: 'newRole'
         },
 
     ])
     .then (response => {
-        db.query(`UPDATE employee SET role_id = ? WHERE employee.id = ?, ('${response.newRole}', ${response.employeeRole})`, (err, data) => {
+        db.query(`UPDATE employee SET role_id = ? WHERE employee.id = ?, (${response.newRole}, ${response.employeeRole})`, (err, data) => {
             if (err) throw err
             console.table (data)
             return viewEmployees()
