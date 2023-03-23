@@ -77,7 +77,7 @@ function addDepartment() {
         }
     ])
     .then (response => {
-        db.query(`insert into department (department_name) ('${response.name}')`, (err, res) => {
+        db.query(`insert into department (department_name) VALUES ('${response.name}')`, (err, res) => {
             if (err) throw err
             console.table (res)
             viewDepartments()
@@ -119,27 +119,27 @@ function addEmployee() {
         {
             type: 'input',
             message: 'Enter employees first name',
-            name: 'firstName'
+            name: 'first_name'
         },
         {
             type: 'input',
             message: 'Enter employees last name',
-            name: 'lastName'
+            name: 'last_name'
         },
         
         {
             type: 'input',
-            message: 'Enter their role',
-            name: 'role'
+            message: 'Enter their role ID',
+            name: 'role_id'
         },
         {
             type: 'input',
-            message: 'Enter their manager',
-            name: 'manager'
+            message: 'Enter their manager`s ID',
+            name: 'manager_id'
         },
     ])
     .then (response => {
-        db.query(`insert into employees (firstName, lastName, role, manager) VALUES ['${response.firstName}', ${response.lastName}, ${response.role}, ${response.manager}]`, (err, data) => {
+        db.query(`insert into employee (first_name, last_name, role_id, manager_id) VALUES ('${response.first_name}', ${response.last_name}, ${response.role_id}, ${response.manager_id})`, (err, data) => {
             if (err) throw err
             console.table (data)
             return viewEmployees()
