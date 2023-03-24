@@ -168,12 +168,24 @@ function updateEmployeeRole() {
         },
 
     ])
-    .then (response => {
-        db.query(`UPDATE employee SET role_id = ? WHERE employee.id = ?, (${response.newRole}, ${response.employeeRole})`, (err, data) => {
-            if (err) throw err
-            console.table (data)
-            return viewEmployees()
-        })
+      .then((response) => {
+            db.query(
+                'UPDATE employee SET role_id = ? WHERE id = ?',
+                [response.newRole, response.newEmployee],
+                (err, data) => {
+                    if (err) throw err;
+                    console.table(data);
+                    return viewEmployees();
+                }
+            );
+        });
+    };
+//     .then (response => {
+//         db.query(`UPDATE employee SET role_id = ? WHERE id = ?, (${response.employeeRole}, ${response.newRole})`, (err, data) => {
+//             if (err) throw err
+//             console.table (data)
+//             return viewEmployees()
+//         })
 
-    })
-}
+//     });
+// };
